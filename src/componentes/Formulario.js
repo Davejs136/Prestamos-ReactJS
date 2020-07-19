@@ -1,80 +1,63 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 
-class Formulario extends Component {
-  state = { 
-    cantidad: '',
-    plazo: ''
-  }
+function Formulario({ datosPrestamo }) {
+  const [cantidad, setCantidad] = useState('');
+  const [plazo, setPlazo] = useState('');
 
-  calcularPrestamo = e => {
+  const calcularPrestamo = e => {
     e.preventDefault();
-
-    // destructuring
-    const {cantidad, plazo} = this.state;
-
-    // Pasarlo al componente padre
-
-    this.props.datosPrestamo(cantidad, plazo);
+    datosPrestamo(cantidad, plazo);
   }
 
-  actualizarState = e => {
-    // Leer los datos del formulario
-    // console.log(e.target.value);
+  const actualizarState = e => {
     const {name, value} = e.target;
 
-    // Actualizar el state
-    this.setState({
-      [name] : Number(value)
-    })
+    name === 'cantidad'
+    ? setCantidad(Number(value))
+    : setPlazo(Number(value));
   }
 
-  habilitarSubmit = () => {
-    // Destructuring
-    const { cantidad, plazo } = this.state;
-    // Leer variables
+  const habilitarSubmit = () => {
     const noValido = !cantidad || !plazo;
-
-    // Retornar respuesta
     return noValido;
   }
 
-  render() { 
-    const {cantidad} = this.state;
-    return ( 
-      <form onSubmit={this.calcularPrestamo}>
-        <div>
-          <label>Cantidad Prestamo:</label>
-          <input 
-            onChange={this.actualizarState}
-            type="number" 
-            name="cantidad" 
-            className="u-full-width" 
-            placeholder="Ejemplo: 3000"/>
-        </div>
-        <div>
-          <label>Plazo para pagar</label>
-          <select 
-            onChange = {this.actualizarState}
-            name="plazo" 
-            className="u-full-width">
-
-            <option value="">Seleccionar</option>
-            <option value="3">3 Meses</option>
-            <option value="6">6 Meses</option>
-            <option value="12">12 Meses</option>
-            <option value="24">24 Meses</option>
-          </select>
-        </div>
-        <div>
-          <input 
-            disabled={this.habilitarSubmit()}
-            type="submit" 
-            value="calcular" 
-            className="u-full-width button-primary"/>
-        </div>
-      </form>
-     );
-  }
+  return (
+    <form onSubmit={calcularPrestamo}>
+      <div>
+        <label>Cantidad Prestamo:</label>
+        <input
+          type="number"
+          name="cantidad"
+          className="u-full-width"
+          placeholder="ejemplo: 3000"
+          onChange={actualizarState}
+        />
+      </div>
+      <div>
+        <label>Plazo a pagar</label>
+        <select
+          name="plazo"
+          className="u-full-width"
+          onChange={actualizarState}
+        >
+          <option value="">Seleccionar</option>
+          <option value="3">3</option>
+          <option value="6">6</option>
+          <option value="12">12</option>
+          <option value="24">24</option>
+        </select>
+      </div>
+      <div>
+        <input 
+          type="submit"
+          value="calcular"
+          className="u-full-width button-primary"
+          disabled={habilitarSubmit()}
+        />
+      </div>
+    </form>
+  );
 }
  
 export default Formulario;

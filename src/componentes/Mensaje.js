@@ -1,9 +1,5 @@
 import React from 'react';
 
-const Mensaje = () => {
-  return ( 
-    <p>Agrega una cantidad y un plazo para pagar</p>
-   );
-}
+const Mensaje = () => <p>Agrega una cantidad y un plazo a pagar</p>;
  
 export default Mensaje;

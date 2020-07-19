@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Fragment, useState} from 'react';
 
 import './normalize.css';
 import './skeleton.css';
@@ -9,72 +9,52 @@ import Resultado from './componentes/Resultado';
 import Mensaje from './componentes/Mensaje';
 import Spinner from './componentes/Spinner'
 
-// function App() {
-//   return (
-//     <Formulario/>
-//   );
-// }
-class App extends Component {
-  state = {
-    total: '',
-    cantidad: '',
-    plazo: '',
-    cargando: false
-  }
+function App() {
+  const [total, setTotal] = useState('')
+  const [cantidad, setCantidad] = useState('')
+  const [plazo, setPlazo] = useState('')
+  const [cargando, setCargando] = useState(false)
 
-  datosPrestamo = (cantidad, plazo) => {
+  let componente;
+
+  const datosPrestamo = (cantidad, plazo) =>{
     const total = calcularTotal(cantidad, plazo);
+    setCargando(true);
 
-    // Colocar el resultado en el state
-    // junto a la cantidad y al plazo
-    this.setState({
-      cargando: true      
-    },() => {
-      setTimeout(() => {
-        this.setState({ 
-          total,
-          cantidad,
-          plazo,
-          cargando: false 
-        })
-      }, 3000);
-    })
+    setTimeout(() => {
+      setTotal(total);
+      setCantidad(cantidad);
+      setPlazo(plazo);
+      setCargando(false);
+    }, 3000);
   }
 
+  if (!total && !cargando) {
+    componente = <Mensaje />
+  } else if (cargando) {
+    componente = <Spinner />
+  } else {
+    componente = 
+      <Resultado
+        total={total}
+        plazo={plazo}
+        cantidad={cantidad}
+      />
+  }
 
-  render() {
-    const {total, plazo, cantidad, cargando}= this.state;
-
-    // cargar un componente condicionalmente
-    let componente;
-
-    if (!total && !cargando) {
-      componente = <Mensaje />
-    } else if(cargando) {
-      componente = <Spinner />
-    } else {
-      componente = <Resultado 
-                      total={total}
-                      plazo={plazo}
-                      cantidad={cantidad}
-                    />
-    }
-
-    return (
-      <Fragment>
-        <h1>Cotizador de Prestamos</h1>
-        <div className="container">
-          <Formulario
-            datosPrestamo={this.datosPrestamo}
-          />
-          
-          <div className="mensajes">
-            {componente}
-          </div>
+  return (
+    <Fragment>
+      <h1>Cotizador de Prestamos</h1>
+      <div className="container">
+        <Formulario 
+          datosPrestamo={datosPrestamo}
+        />
+        <div className="mensajes">
+          {componente}
         </div>
-      </Fragment>
-    );
-  }
+      </div>
+    </Fragment>
+  )
 }
 
 export default App;
